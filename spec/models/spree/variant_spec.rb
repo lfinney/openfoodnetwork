@@ -539,4 +539,54 @@ module Spree
       end
     end
   end
+
+  describe "price parsing" do
+  let!(:variant) { create(:variant, :count_on_hand => 95) }
+
+    describe "price=" do
+      context "with decimal point" do
+        it "captures the proper amount for a formatted price" do
+          variant.price = '1,599.99'
+          expect(variant.price).to eq 1599.99
+        end
+      end
+
+      context "with decimal comma" do
+        it "captures the proper amount for a formatted price" do
+          variant.price = '1.599,99'
+          expect(variant.price).to eq 1599.99
+        end
+      end
+
+      context "with a numeric price" do
+        it "uses the price as is" do
+          variant.price = 1599.99
+          expect(variant.price).to eq 1599.99
+        end
+      end
+    end
+
+    describe "cost_price=" do
+      context "with decimal point" do
+        it "captures the proper amount for a formatted price" do
+          variant.cost_price = '1,599.99'
+          expect(variant.cost_price).to eq 1599.99
+        end
+      end
+
+      context "with decimal comma" do
+        it "captures the proper amount for a formatted price" do
+          variant.cost_price = '1.599,99'
+          expect(variant.cost_price).to eq 1599.99
+        end
+      end
+
+      context "with a numeric price" do
+        it "uses the price as is" do
+          variant.cost_price = 1599.99
+          expect(variant.cost_price).to eq 1599.99
+        end
+      end
+    end
+  end
 end
