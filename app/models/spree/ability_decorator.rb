@@ -56,8 +56,13 @@ class AbilityDecorator
       user == item.order.user &&
       item.order.changes_allowed?
     end
+
     can [:cancel], Spree::Order do |order|
       order.user == user
+    end
+
+    can [:destroy], Spree::CreditCard do |credit_card|
+      credit_card.user == user
     end
   end
 
@@ -117,6 +122,10 @@ class AbilityDecorator
 
     can [:admin, :bulk_update], ColumnPreference do |column_preference|
       column_preference.user == user
+    end
+
+    can [:status, :destroy], StripeAccount do |stripe_account|
+      user.enterprises.include? stripe_account.enterprise
     end
   end
 

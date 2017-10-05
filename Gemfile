@@ -10,7 +10,7 @@ gem 'i18n-js', '~> 3.0.0'
 gem 'nokogiri', '>= 1.6.7.1'
 
 gem 'pg'
-gem 'spree', github: 'coopdevs/spree', branch: 'spree-upgrade-step-6', ref: '6705667'
+gem 'spree', github: 'openfoodfoundation/spree', branch: 'step-6a', ref: '5a76d45'
 gem 'spree_i18n', github: 'spree/spree_i18n', branch: '1-3-stable'
 gem 'spree_auth_devise', github: 'openfoodfoundation/spree_auth_devise', branch: 'spree-upgrade-intermediate'
 
@@ -19,6 +19,11 @@ gem 'spree_auth_devise', github: 'openfoodfoundation/spree_auth_devise', branch:
 # - Change type of password from string to password to hide it in the form
 gem 'spree_paypal_express', :github => "openfoodfoundation/better_spree_paypal_express", :branch => "spree-upgrade-intermediate"
 #gem 'spree_paypal_express', :github => "spree-contrib/better_spree_paypal_express", :branch => "1-3-stable"
+gem 'stripe', '~> 3.3.1'
+gem 'activemerchant', '~> 1.71.0'
+
+gem 'oauth2', '~> 1.2.0' # Used for Stripe Connect
+gem 'jwt', '~> 1.5'
 
 gem 'delayed_job_active_record'
 gem 'daemons'

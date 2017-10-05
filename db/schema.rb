@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170413083148) do
+ActiveRecord::Schema.define(:version => 20170921065259) do
 
   create_table "account_invoices", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -469,7 +469,12 @@ ActiveRecord::Schema.define(:version => 20170413083148) do
     t.datetime "updated_at",                  :null => false
     t.string   "gateway_customer_profile_id"
     t.string   "gateway_payment_profile_id"
+    t.integer  "user_id"
+    t.integer  "payment_method_id"
   end
+
+  add_index "spree_credit_cards", ["payment_method_id"], :name => "index_spree_credit_cards_on_payment_method_id"
+  add_index "spree_credit_cards", ["user_id"], :name => "index_spree_credit_cards_on_user_id"
 
   create_table "spree_gateways", :force => true do |t|
     t.string   "type"
@@ -586,9 +591,9 @@ ActiveRecord::Schema.define(:version => 20170413083148) do
     t.string   "email"
     t.text     "special_instructions"
     t.integer  "distributor_id"
+    t.integer  "order_cycle_id"
     t.string   "currency"
     t.string   "last_ip_address"
-    t.integer  "order_cycle_id"
     t.integer  "cart_id"
     t.integer  "customer_id"
   end
@@ -998,6 +1003,7 @@ ActiveRecord::Schema.define(:version => 20170413083148) do
     t.datetime "reset_password_sent_at"
     t.string   "api_key",                :limit => 40
     t.integer  "enterprise_limit",                     :default => 1, :null => false
+    t.string   "locale",                 :limit => 5
   end
 
   add_index "spree_users", ["email"], :name => "email_idx_unique", :unique => true
@@ -1042,6 +1048,16 @@ ActiveRecord::Schema.define(:version => 20170413083148) do
     t.boolean  "default_tax",        :default => false
     t.integer  "zone_members_count", :default => 0
   end
+
+  create_table "stripe_accounts", :force => true do |t|
+    t.string   "stripe_user_id"
+    t.string   "stripe_publishable_key"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+    t.integer  "enterprise_id"
+  end
+
+  add_index "stripe_accounts", ["enterprise_id"], :name => "index_stripe_accounts_on_enterprise_id", :unique => true
 
   create_table "suburbs", :force => true do |t|
     t.string  "name"
