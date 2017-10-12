@@ -26,28 +26,29 @@ class CheckoutController < Spree::CheckoutController
           return if redirect_to_paypal_express_form_if_needed
         end
 
-        if advance_order_state(@order)
-          state_callback(:after)
+        next if advance_order_state(@order)
+
+        if @order.errors.present?
+          flash[:error] = @order.errors.full_messages.to_sentence
         else
-          if @order.errors.present?
-            flash[:error] = @order.errors.full_messages.to_sentence
-          else
-            flash[:error] = t(:payment_processing_failed)
-          end
-          update_failed
-          return
+          flash[:error] = t(:payment_processing_failed)
         end
+        update_failed
+        return
       end
       if @order.state == "complete" ||  @order.completed?
         set_default_bill_address
         set_default_ship_address
 
-        flash[:success] = t(:order_processed_successfully)
+        ResetOrderService.new(self, current_order).call
+        session[:access_token] = current_order.token
+
+        flash[:notice] = t(:order_processed_successfully)
         respond_to do |format|
           format.html do
             respond_with(@order, :location => order_path(@order))
           end
-          format.js do
+          format.json do
             render json: {path: order_path(@order)}, status: 200
           end
         end
@@ -59,6 +60,13 @@ class CheckoutController < Spree::CheckoutController
     end
   end
 
+  # Clears the cached order. Required for #current_order to return a new order
+  # to serve as cart. See https://github.com/spree/spree/blob/1-3-stable/core/lib/spree/core/controller_helpers/order.rb#L14
+  # for details.
+  def expire_current_order
+    session[:order_id] = nil
+    @current_order = nil
+  end
 
   private
 
@@ -111,6 +119,9 @@ class CheckoutController < Spree::CheckoutController
     if (params[:order][:payments_attributes])
       params[:order][:payments_attributes].first[:amount] = @order.total
     end
+    if params[:order][:existing_card_id]
+      construct_saved_card_attributes
+    end
     params[:order]
   end
 
@@ -130,7 +141,7 @@ class CheckoutController < Spree::CheckoutController
       format.html do
         render :edit
       end
-      format.js do
+      format.json do
         render json: {errors: @order.errors, flash: flash.to_hash}.to_json, status: 400
       end
     end
@@ -154,7 +165,7 @@ class CheckoutController < Spree::CheckoutController
     raise_insufficient_quantity and return if @order.insufficient_stock_lines.present?
     redirect_to main_app.shop_path and return if @order.completed?
     before_address
-    state_callback(:before)
+    setup_for_current_state
   end
 
   def before_address
@@ -170,14 +181,6 @@ class CheckoutController < Spree::CheckoutController
 
     @order.bill_address ||= customer_preferred_bill_address || preferred_bill_address || last_used_bill_address || Spree::Address.default
     @order.ship_address ||= customer_preferred_ship_address || preferred_ship_address || last_used_ship_address || Spree::Address.default
-  end
-
-  def after_payment
-    # object_params sets the payment amount to the order total, but it does this before
-    # the shipping method is set. This results in the customer not being charged for their
-    # order's shipping. To fix this, we refresh the payment amount here.
-    @order.update_totals
-    @order.payments.first.update_attribute :amount, @order.total
   end
 
   # Overriding Spree's methods
@@ -201,5 +204,29 @@ class CheckoutController < Spree::CheckoutController
 
     render json: {path: spree.paypal_express_url(payment_method_id: payment_method.id)}, status: 200
     true
+  end
+
+  def construct_saved_card_attributes
+    existing_card_id = params[:order].delete(:existing_card_id)
+    return if existing_card_id.blank?
+
+    credit_card = Spree::CreditCard.find(existing_card_id)
+    if credit_card.try(:user_id).blank? || credit_card.user_id != spree_current_user.try(:id)
+      raise Spree::Core::GatewayError, I18n.t(:invalid_credit_card)
+    end
+
+    # Not currently supported but maybe we should add it...?
+    credit_card.verification_value = params[:cvc_confirm] if params[:cvc_confirm].present?
+
+    params[:order][:payments_attributes].first[:source] = credit_card
+    params[:order][:payments_attributes].first.delete :source_attributes
+  end
+
+  def rescue_from_spree_gateway_error(error)
+    flash[:error] = t(:spree_gateway_error_flash_for_checkout, error: error.message)
+    respond_to do |format|
+      format.html { render :edit }
+      format.json { render json: { flash: flash.to_hash }, status: 400 }
+    end
   end
 end
