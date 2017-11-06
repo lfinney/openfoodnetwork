@@ -127,7 +127,7 @@ feature %q{
     page.should_not have_select2 'order_order_cycle_id'
 
     page.should have_selector 'p', text: "Distributor: #{@order.distributor.name}"
-    page.should have_selector 'p', text: "Order Cycle: None"
+    page.should have_selector 'p', text: "Order cycle: None"
   end
 
   scenario "filling customer details" do
@@ -204,7 +204,6 @@ feature %q{
     end
 
     context "viewing the edit page" do
-      before { Rails.application.routes.default_url_options[:host] = "test.host" }
       it "shows the dropdown menu" do
         distributor1.update_attribute(:abn, '12345678')
         order = create(:completed_order_with_totals, distributor: distributor1)

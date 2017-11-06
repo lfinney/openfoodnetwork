@@ -113,6 +113,18 @@ module WebHelper
     DirtyFormDialog.new(page)
   end
 
+  def set_i18n_locale(locale = 'en')
+    page.evaluate_script("I18n.locale = '#{locale}'")
+  end
+
+  def get_i18n_locale
+    page.evaluate_script("I18n.locale;")
+  end
+
+  def get_i18n_translation(key = nil)
+    page.evaluate_script("I18n.t('#{key}');")
+  end
+
   # Fetch the content of a script block
   # eg. script_content with: 'my-script.com'
   # Returns nil if not found

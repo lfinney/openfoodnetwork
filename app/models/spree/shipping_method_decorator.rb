@@ -8,7 +8,7 @@ Spree::ShippingMethod.class_eval do
   attr_accessible :distributor_ids, :description
   attr_accessible :require_ship_address, :tag_list
 
-  validates :distributors, presence: { message: "^At least one hub must be selected" }
+  validates_with DistributorsValidator
 
   scope :managed_by, lambda { |user|
     if user.has_spree_role?('admin')
@@ -42,8 +42,8 @@ Spree::ShippingMethod.class_eval do
     ]
   end
 
-  def available_to_order_with_distributor_check?(order, display_on=nil)
-    available_to_order_without_distributor_check?(order, display_on) &&
+  def available_to_order_with_distributor_check?(order)
+    available_to_order_without_distributor_check?(order) &&
       self.distributors.include?(order.distributor)
   end
   alias_method_chain :available_to_order?, :distributor_check
@@ -62,6 +62,15 @@ Spree::ShippingMethod.class_eval do
 
   def adjustment_label
     'Shipping'
+  end
+
+  # Checks whether the shipping method is of delivery type, meaning that it
+  # requires the user to specify a ship address at checkout. Note this is
+  # a setting we added onto the +spree_shipping_methods+ table.
+  #
+  # @return [Boolean]
+  def delivery?
+    require_ship_address
   end
 
   private

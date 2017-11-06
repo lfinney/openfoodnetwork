@@ -3,6 +3,7 @@ require 'open_food_network/products_and_inventory_report_base'
 module OpenFoodNetwork
   class LettuceShareReport < ProductsAndInventoryReportBase
     def header
+      # NOTE: These are NOT to be translated, they need to be in this exact format to work with LettucShare
       [
         "PRODUCT",
         "Description",

@@ -12,6 +12,7 @@ AllCops:
     - 'config/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+    - 'node_modules/**/*'
     - !ruby/regexp /old_and_unused\.rb$/
 
 # OFN SETTINGS
@@ -141,6 +142,10 @@ Style/TrailingCommaInLiteral:
 Style/WordArray:
   Enabled: false
   StyleGuide: http://relaxed.ruby.style/#stylewordarray
+
+Style/SymbolArray:
+  Enabled: false
+  StyleGuide: https://rubocop.readthedocs.io/en/latest/cops_style/#stylesymbolarray
 
 Lint/AmbiguousRegexpLiteral:
   Enabled: false

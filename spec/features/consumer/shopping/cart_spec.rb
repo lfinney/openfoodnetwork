@@ -20,6 +20,21 @@ feature "full-page cart", js: true do
       set_order order
     end
 
+    around do |example|
+      allow_backorders = Spree::Config.allow_backorders
+      Spree::Config.allow_backorders = false
+      example.run
+      Spree::Config.allow_backorders = allow_backorders
+    end
+
+    describe "product description" do
+      it "does not link to the product page" do
+        add_product_to_cart order, product_fee, quantity: 2
+        visit spree.cart_path
+        expect(page).to_not have_selector '.item-thumb-image a'
+      end
+    end
+
     describe "fees" do
       let(:percentage_fee) { create(:enterprise_fee, calculator: Calculator::FlatPercentPerItem.new(preferred_flat_percent: 20)) }
 

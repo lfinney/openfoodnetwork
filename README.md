@@ -54,6 +54,7 @@ First, check your dependencies: Ensure that you have Ruby 2.1.5 installed:
 Install the project's gem dependencies:
 
     cd openfoodnetwork
+    ./script/upgrade_bundler.sh
     bundle install
 
 Configure the site:
@@ -71,18 +72,22 @@ createuser -s -P ofn
 ```
 
 Create the development and test databases, using the settings specified in `config/database.yml`, and populate them with a schema and seed data:
-
-    rake db:setup
-
+```
+bundle exec rake db:setup
+```
 Load some default data for your environment:
-
-    rake openfoodnetwork:dev:load_sample_data
-
+```
+bundle exec rake openfoodnetwork:dev:load_sample_data
+```
 At long last, your dreams of spinning up a development server can be realised:
-
-    rails server
-
-
+```
+bundle exec rails server
+```
+To login as Spree default user, use:
+```
+email: spree@example.com
+password: spree123
+```
 ### Testing
 
 Tests, both unit and integration, are based on RSpec. To run the test suite, first prepare the test database:
@@ -107,6 +112,9 @@ If you want karma to automatically rerun the tests on file modification, use:
 
     ./script/karma start
 
+### Multilingual
+Do not forget to run `rake tmp:cache:clear` after locales are updated to reload I18n js translations.
+
 ## Credits
 
 * Andrew Spinks (http://github.com/andrewspinks)
@@ -119,7 +127,7 @@ If you want karma to automatically rerun the tests on file modification, use:
 * Maikel Linke (https://github.com/mkllnk)
 * Lynne Davis (https://github.com/lin-d-hop)
 * Paul Mackay (https://github.com/pmackay)
-* Steve Petitt (https://github.com/stveep)
+* Steve Pettitt (https://github.com/stveep)
 
 
 ## Licence

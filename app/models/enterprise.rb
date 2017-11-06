@@ -42,6 +42,7 @@ class Enterprise < ActiveRecord::Base
   has_many :billable_periods
   has_many :inventory_items
   has_many :tag_rules
+  has_one :stripe_account, dependent: :destroy
 
   delegate :latitude, :longitude, :city, :state_name, :to => :address
 
@@ -66,7 +67,6 @@ class Enterprise < ActiveRecord::Base
   supports_s3 :logo
   supports_s3 :promo_image
 
-
   validates :name, presence: true
   validate :name_is_unique
   validates :sells, presence: true, inclusion: {in: SELLS}
@@ -77,7 +77,6 @@ class Enterprise < ActiveRecord::Base
   validate :shopfront_taxons
   validate :enforce_ownership_limit, if: lambda { owner_id_changed? && !owner_id.nil? }
   validates_length_of :description, :maximum => 255
-
 
   before_save :confirmation_check, if: lambda { email_changed? }
 
@@ -94,7 +93,6 @@ class Enterprise < ActiveRecord::Base
   after_create :send_welcome_email, if: lambda { email_is_known? }
 
   after_rollback :restore_permalink
-
 
   scope :by_name, order('name')
   scope :visible, where(visible: true)
@@ -378,7 +376,7 @@ class Enterprise < ActiveRecord::Base
     dups = dups.where('id != ?', id) unless new_record?
 
     if dups.any?
-      errors.add :name, "has already been taken. If this is your enterprise and you would like to claim ownership, please contact the current manager of this profile at #{dups.first.owner.email}."
+      errors.add :name, I18n.t(:enterprise_name_error, email: dups.first.owner.email)
     end
   end
 
@@ -427,7 +425,7 @@ class Enterprise < ActiveRecord::Base
 
   def enforce_ownership_limit
     unless owner.can_own_more_enterprises?
-      errors.add(:owner, "^#{owner.email} is not permitted to own any more enterprises (limit is #{owner.enterprise_limit}).")
+      errors.add(:owner, I18n.t(:enterprise_owner_error, email: owner.email, enterprise_limit: owner.enterprise_limit ))
     end
   end
 

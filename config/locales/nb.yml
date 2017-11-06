@@ -3,7 +3,16 @@ nb:
     attributes:
       spree/order:
         payment_state: Betalingsstatus
-        shipment_state: Sendingsstatus
+        shipment_state: Leveringsstatus
+        completed_at: Fullført på
+        number: Nummer
+        email: Epost Kunde
+    errors:
+      models:
+        spree/user:
+          attributes:
+            email:
+              taken: "Det finnes allerede en konto for denne eposten. Vennligst logg inn eller tilbakestill passordet ditt."
   devise:
     failure:
       invalid: |
@@ -11,15 +20,19 @@ nb:
         Var du gjest forrige gang? Kanskje du må opprette en konto eller nullstille passordet.
     enterprise_confirmations:
       enterprise:
-        confirmed: Takk, e-postadressen din er bekreftet.
+        confirmed: Takk, epostadressen din er bekreftet.
         not_confirmed: Din epostadresse kan ikke bekreftes. Kanskje du allerede har fullført dette steget?
-        confirmation_sent: "Bekreftelse på epost er sendt!"
-        confirmation_not_sent: "Kunne ikke sende bekreftelse på epost."
+        confirmation_sent: "Bekreftelsesepost er sendt!"
+        confirmation_not_sent: "Kunne ikke sende bekreftelsesepost."
   enterprise_mailer:
     confirmation_instructions:
-      subject: "Vennligst bekreft e-postadressen til %{enterprise}"
+      subject: "Vennligst bekreft epostadressen til %{enterprise}"
     welcome:
       subject: "%{enterprise} er nå på %{sitename}"
+  producer_mailer:
+    order_cycle:
+      subject: "Bestillingsrunderapport for %{producer}"
+  home: "OFN"
   title: Open Food Network
   welcome_to: 'Velkommen til '
   site_meta_description: "Vi begynner fra grunnen. Med bønder og dyrkere klare til å fortelle sine historier, stolt og virkelig. Med distributører klare til å koble mennesker med produkter på en rettferdig og ærlig måte. Med kunder som tror på at ukentlige innkjøpsrutiner kan..."
@@ -63,16 +76,42 @@ nb:
   cancel: Avbryt
   edit: Endre
   distributors: Distributører
+  distribution: Distribusjon
   bulk_order_management: Bulk ordrehåndtering
   enterprise_groups: Grupper
   reports: Rapporter
   variant_overrides: Varelager
-  more: Mer
   spree_products: Spree Produkter
   all: Alle
   current: Nåværende
   available: Tilgjengelig
   dashboard: Dashboard
+  undefined: udefinert
+  unused: ubrukt
+  admin_and_handling: Admin & Håndtering
+  profile: Profil
+  supplier_only: Kun leverandør
+  weight: Vekt
+  volume: Volum
+  items: Elementer
+  summary: Sammendrag
+  detailed: Detaljert
+  updated: Oppdatert
+  'yes': "Ja"
+  'no': "Nei"
+  y: 'J'
+  n: 'N'
+  powered_by: Drevet av
+  blocked_cookies_alert: "Nettleseren din kan blokkere informasjonskapsler som trengs for å bruke denne butikken. Klikk nedenfor for å tillate informasjonskapsler 'cookies' og last siden på nytt."
+  allow_cookies: "Tillat informasjonskapsler"
+  notes: Merknader
+  error: Feil
+  processing_payment: Behandler betaling ...
+  show_only_unfulfilled_orders: Vis kun uoppfylte ordrer
+  filter_results: Filtrer Resultater
+  quantity: Mengde
+  actions:
+    create_and_add_another: "Opprett og legg til en annen"
   admin:
     date: Dato
     email: Epost
@@ -93,6 +132,8 @@ nb:
     weight: Vekt
     volume: Volum
     items: Varer
+    select_all: Velg alle
+    obsolete_master: Foreldet master
     quick_search: Hurtigsøk
     clear_all: Fjern Alt
     start_date: "Startdato"
@@ -127,6 +168,14 @@ nb:
         finalise_user_invoices: "Ferdigstill Brukerfakturaer"
         finalise_user_invoice_explained: "Bruk denne knappen til å ferdigstille alle fakturaer i systemet for forrige kalendermåned. Denne oppgaven kan settes opp til å kjøre automatisk en gang i måneden."
         update_user_invoices: "Oppdater Brukerfakturaer"
+      errors:
+        accounts_distributor: Må settes hvis du ønsker å opprette fakturaer for brukere.
+        default_payment_method: Må settes hvis du ønsker å opprette fakturaer for brukere.
+        default_shipping_method: Må settes hvis du ønsker å opprette fakturaer for brukere.
+    shopfront_settings:
+      embedded_shopfront_settings: "Innstillinger Innebygd Nettbutikk"
+      enable_embedded_shopfronts: "Aktiver Innebygd Nettbutikk"
+      embedded_shopfronts_whitelist: "Hviteliste for Eksterne Domener"
     business_model_configuration:
       edit:
         business_model_configuration: "Forretningsmodell"
@@ -139,8 +188,8 @@ nb:
         fixed_monthly_charge_tip: "En fast månedlig belastning for alle bedrifter som er satt opp som butikk og har overskredet minimum fakturert omsetning (hvis konfigurert)."
         percentage_of_turnover: "Prosent av omsetning"
         percentage_of_turnover_tip: "Når større enn null, gjelder denne raten (0.0 - 1.0) på total omsetning for hver butikk og lagt til enhver fast rate (til venstre) for å beregne den månedlige fakturaen."
-        monthly_cap_excl_tax: "månedlig lokk (eks. MVA)"
-        monthly_cap_excl_tax_tip: "Når større enn null vil denne verdien bli brukt som et lokk på hvor mye butikker vil bli belastet hver måned."
+        monthly_cap_excl_tax: "månedlig tak (eks. MVA)"
+        monthly_cap_excl_tax_tip: "Når større enn null vil denne verdien bli brukt som et tak på hvor mye butikker vil bli belastet hver måned."
         tax_rate: "Avgiftsrate"
         tax_rate_tip: "Avgiftsrate som gjelder månedlig regning som bedrifter blir belastet for å bruke systemet."
         minimum_monthly_billable_turnover: "Minimum Månedlig Fakturerbar Omsetning"
@@ -149,8 +198,8 @@ nb:
         example_bill_calculator_legend: "Endre eksempelomsetningen for å se effekten av innstillingene til venstre."
         example_monthly_turnover: "Eksempel på Månedlig Omsetning"
         example_monthly_turnover_tip: "Eksempel på månedlig omsetning for en bedrift som vil bli brukt for å generere beregning av eksempel på månedlig regning under."
-        cap_reached?: "Lokk Nådd?"
-        cap_reached?_tip: "Om lokket (spesifisert til venstre) er nådd, gitt innstillingene og omsetningen som er satt."
+        cap_reached?: "Tak Nådd?"
+        cap_reached?_tip: "Om taket (spesifisert til venstre) er nådd, gitt innstillingene og omsetningen som er satt."
         included_tax: "Inkludert avgift"
         included_tax_tip: "Total avgift inkludert i eksemplet på månedlig regning, gitt innstillingene og omsetningen som er satt."
         total_monthly_bill_incl_tax: "Total Månedlig Regning (Inkl. Avgift)"
@@ -158,11 +207,11 @@ nb:
     customers:
       index:
         add_customer: "Legge til kunde"
-        new_customer: "Ny kunder"
+        new_customer: "Ny kunde"
         customer_placeholder: "customer@example.org"
         valid_email_error: Vennligst oppgi en gyldig epostadresse
         add_a_new_customer_for: Legge til en ny kunde for %{shop_name}
-        code: kode
+        code: Kode
         duplicate_code: "Denne koden er allerede brukt."
         bill_address: "Fakturaadresse"
         ship_address: "Leveringsstatus"
@@ -171,12 +220,14 @@ nb:
         edit_bill_address: 'Rediger fakturaadresse'
         edit_ship_address: 'Rediger leveringsadresse'
         required_fileds: 'Obligatoriske felt er merket med en stjerne'
-        select_country: 'velg landet'
-        select_state: 'Velg Fylket'
-        edit: 'Redigere'
+        select_country: 'Velg Land'
+        select_state: 'Velg Fylke'
+        edit: 'Rediger'
         update_address: 'Oppdater Adresse'
         confirm_delete: 'Sikker på å slette?'
         search_by_email: "Søk på epost/kode..."
+      destroy:
+        has_associated_orders: 'Sletting mislyktes: kunden har tilknyttede ordrer med sin butikk'
     cache_settings:
       show:
         title: Mellomlagring
@@ -184,9 +235,17 @@ nb:
         order_cycle: Bestillingsrunde
         status: Status
         diff: Forskjell
+        error: Feil
     contents:
       edit:
         title: Innhold
+        header: Overskrift
+        home_page: Hjemmeside
+        producer_signup_page: Produsent registreringsside
+        hub_signup_page: Hub-registreringsside
+        group_signup_page: Grupperegistreringsside
+        footer_and_external_links: Footer og eksterne lenker
+        your_content: Ditt innhold
     enterprise_fees:
       index:
         title: Bedriftsavgifter
@@ -199,16 +258,13 @@ nb:
     enterprise_groups:
       index:
         new_button: Ny Bedriftsgruppe
+    enterprise_roles:
+      form:
+        manages: administrerer
+      enterprise_role:
+        manages: administrerer
     products:
       unit_name_placeholder: 'f.eks. bunter'
-      bulk_edit:
-        unit: Enhet
-        display_as: Vis som
-        category: Kategori
-        tax_category: Avgiftskategori
-        inherits_properties?: Arver Egenskaper?
-        available_on: Tilgjengelig på
-        av_on: "Til. på"
       properties:
         property_name: Navn på egenskap
         inherited_property: Arvet egenskap
@@ -236,7 +292,14 @@ nb:
         inventory_powertip: Dette er ditt varelager. For å legge til lageret, velg 'Nye Produkter' fra Visningslisten.
         hidden_powertip: Disse produktene har blitt skjult fra ditt varelager og vil ikke være tilgjengelig for å legge til din butikk. Du kan klikke "Legg til" for å legge et produkt til ditt varelager.
         new_powertip: Disse produktene er tilgjengelige for å bli lagt til ditt varelager. Klikk "Legg til" for å legge et produkt til lageret ditt, eller "Skjul" for å skjule det fra visning. Du kan alltids ombestemme deg senere!
+      controls:
+        back_to_my_inventory: Tilbake til min varelager
     orders:
+      index:
+        capture: "Fang"
+        ship: "Levere"
+      invoice_email_sent: 'Faktura-e-post er sendt'
+      order_email_resent: 'Bestillings-e-post har blitt angitt'
       bulk_management:
         tip: "Bruk denne siden for å endre produktantall på tvers av flere bestillinger. Produkter kan også fjernes fra bestillinger helt, hvis påkrevd."
         shared: "Delt Ressurs?"
@@ -274,9 +337,9 @@ nb:
           desc_long: Om Oss
           desc_long_placeholder: Fortell kunder om deg selv. Denne informasjonen vises på din offentlige profil.
         business_details:
-          abn: Org nr.
+          abn: Org. nr.
           abn_placeholder: f.eks. 999 000 123
-          acn: Mva. nr.
+          acn: MVA nr.
           acn_placeholder: f.eks. 999 000 123
           display_invoice_logo: Vis logo i fakturaer
           invoice_text: Legg til tilpasset tekst på slutten av fakturaer
@@ -284,7 +347,7 @@ nb:
           name: Navn
           name_placeholder: f.eks. Gustav Plum
           email_address: Epostadresse
-          email_address_placeholder: f.eks. www.truffles.com
+          email_address_placeholder: f.eks. gustav@truffles.com
           phone: Telefon
           phone_placeholder: f.eks. 987 123 654
           website: Hjemmeside
@@ -376,6 +439,18 @@ nb:
           close_date: Stengedato
         social:
           twitter_placeholder: f.eks. @the_prof
+        stripe_connect:
+          connect_with_stripe: "Koble til Stripe"
+          stripe_connect_intro: "For å akseptere betaling med kredittkort må du koble din Stripe konto til Open Food Network. Bruk knappen til høyre for å komme i gang."
+          stripe_account_connected: "Stripe-konto tilkoblet."
+          disconnect: "Koble fra kontoen"
+          confirm_modal:
+            title: Koble til Stripe
+            part1: Stripe er en betalingsbehandlingstjeneste som gjør at butikker på OFN kan godta kredittkortbetalinger fra kunder.
+            part2: For å bruke denne funksjonen må du koble Stripe-kontoen din til OFN. Hvis du klikker «Jeg godtar» nedenfor, blir du omdirigert til Stripes nettsted der du kan koble til en eksisterende Stripe-konto, eller opprette en ny hvis du ikke allerede har en.
+            part3: Dette vil tillate Open Food Network å godta kredittkortbetalinger fra kunder på dine vegne. Vær oppmerksom på at du må opprettholde din egen Stripe-konto, betale Stripe-avgifter og håndtere eventuelle tilbakeføringer og kundeservice selv.
+            i_agree: Jeg er enig
+            cancel: Avbryt
         tag_rules:
           default_rules:
             by_default: Som Standard
@@ -393,7 +468,7 @@ nb:
           owner_tip: Primærbrukeren ansvarlig for denne bedriften.
           notifications: Varslinger
           notifications_tip: Varslinger om bestillinger vil bli sendt til denne epostadressen.
-          notifications_placeholder: f.eks. www.truffles.com
+          notifications_placeholder: f.eks. gustav@truffles.com
           notifications_note: 'Merk: En ny epostadresse må kanskje bekreftes før bruk'
           managers: Administratorer
           managers_tip: Andre brukere med tilgang til å administrere denne bedriften.
@@ -420,8 +495,8 @@ nb:
         producer_description_text: Legg til dine produkter til Open Food Network, tillat hubs å lagre dine produkter i sine butikker.
         producer_shop: Produsentbutikk
         sell_your_produce: Selg dine egne produkter
-        sell_description_text: Selg dine produkter direkte til kunder gjennom din egen Open Food Network nettbutikk.
-        sell_description_text2: En Produsentbutikk er kun for dine produkter, hvis du ønsker å selge produkter dyrket/produsert en annen plass, velg 'Produsenthub'.
+        producer_shop_description_text: Selg dine produkter direkte til kunder gjennom din egen Open Food Network nettbutikk.
+        producer_shop_description_text2: En Produsentbutikk er kun for dine produkter, hvis du ønsker å selge produkter dyrket/produsert en annen plass, velg 'Produsenthub'.
         producer_hub: Produsenthub
         producer_hub_text: Selg egne produkter og produkter fra andre
         producer_hub_description_text: Din bedrift er ryggraden i ditt lokale matsystem. Du kan selge dine egne produkter og produkter samlet fra andre bedrifter gjennom din nettbutikk på Open Food Network.
@@ -459,12 +534,17 @@ nb:
         advanced_settings: Avanserte Innstillinger
         update_and_close: Oppdater og Lukk
         choose_products_from: 'Velg Produkter Fra:'
-        pickup_time_tip: Når bestillinger fra denne runden blir klar for kunden
-        pickup_instructions_tip: Disse instruksjonene vises til kunder etter de ferdigstiller en bestilling
       exchange_form:
+        pickup_time_tip: Når bestillinger fra denne runden vil være klar for kunden
         pickup_instructions_placeholder: "Henteinstruksjoner"
+        pickup_instructions_tip: Disse instruksjonene vises til kunder etter at de har fullført en bestilling
         pickup_time_placeholder: "Klar til (dvs. Dato/Tid)"
         receival_instructions_placeholder: "Mottaksinstruksjoner"
+        add_fee: 'Legg til gebyr'
+        selected: 'valgt'
+      add_exchange_form:
+        add_supplier: 'Legg til leverandør'
+        add_distributor: 'Legg til distributør'
       advanced_settings:
         title: Avanserte Innstillinger
         choose_product_tip: Du kan velge å begrense alle tilgjengelige produkter (både innkommende og utgående), til kun de i %{inventory}s varelager.
@@ -511,11 +591,98 @@ nb:
         title: Fakturainnstillinger
         invoice_style2?: Bruk den alternative fakturamodellen som inkluderer total avgiftsoppdeling pr rate og avgiftsrateinfo pr vare (passer ikke for land som viser priser ekskludert avgift)
         enable_receipt_printing?: 'Vis valg for utskrift av kvitteringer ved bruk av kvitteringsprinter i nedtrekksmeny for bestillinger? '
+    overview:
+      enterprises_header:
+        ofn_with_tip: Bedrifter er Produsenter og / eller Hubs og er den grunnleggende organisasjonsenheten innen Open Food Network.
+      enterprises_hubs_tabs:
+        has_no_payment_methods: "%{enterprise} har ingen betalingsmetoder"
+        has_no_shipping_methods: "%{enterprise} har ingen fraktmetoder"
+        has_no_enterprise_fees: "%{enterprise} har ingen bedriftsavgifter"
+    enterprise_issues:
+      create_new: Opprett ny
+      resend_email: Send e-post igjen
+      has_no_payment_methods: "%{enterprise} har ingen betalingsmetoder"
+      has_no_shipping_methods: "%{enterprise} har ingen fraktmetoder"
+      email_confirmation: "E-postbekreftelse venter. Vi har sendt en bekreftelses-epost til %{email}."
+      not_visible: "%{enterprise} er ikke synlig og kan derfor ikke finnes på kartet eller i søk"
+    reports:
+      hidden: SKJULTE
+      unitsize: ENHETSSTØRRELSE
+      total: SUM
+      total_items: ANTALL
+      supplier_totals: Bestillingsrunde Leverandør Sum
+      supplier_totals_by_distributor: Bestillingsrunde Leverandør Totaler etter Distributør
+      totals_by_supplier: Bestillingsrunde Distributør Totaler etter Leverandør
+      customer_totals: Bestillingsrunde Kunde Totaler
+      all_products: Alle produkter
+      inventory: Inventar (tilgjengelig)
+      lettuce_share: LettuceShare
+      mailing_list: Mailingliste
+      addresses: Adresser
+      payment_methods: Betalingsmetoder rapport
+      delivery: Leveringsrapport
+      tax_types: Avgiftstyper
+      tax_rates: Avgiftsrater
+      pack_by_customer: Pakk etter Kunde
+      pack_by_supplier: Pakk etter Leverandør
+      orders_and_distributors:
+        name: Bestillinger og Distributører
+        description: Bestillinger med distributørdetaljer
+      bulk_coop:
+        name: Bulk Co-Op
+        description: Rapporter for Bulk Co-Op bestillinger
+      payments:
+        name: Betalingsrapporter
+        description: Rapporter for betalinger
+      orders_and_fulfillment:
+        name: Bestillinger og Oppfyllelsesrapporter
+      customers:
+        name: Kunder
+      products_and_inventory:
+        name: Produkter & Varelager
+      sales_total:
+        name: Salg Totalt
+        description: Salg totalt for Alle bestillinger
+      users_and_enterprises:
+        name: Brukere og Bedrifter
+        description: Bedriftseierskap & Status
+      order_cycle_management:
+        name: Administrering Bestillingsrunder
+      sales_tax:
+        name: Omsetningsavgift
+      xero_invoices:
+        name: Xero-fakturaer
+        description: Fakturaer for import til Xero
+      packing:
+        name: Pakkerapporter
+    stripe_connect_settings:
+      edit:
+        title: "Stripe Connect"
+        settings: "Innstillinger"
+        stripe_connect_enabled: Sette butikker i stand til å godta betaling ved hjelp av Stripe Connect?
+        no_api_key_msg: Ingen Stripe-konto eksisterer for denne bedriften.
+        configuration_explanation_html: For detaljerte instruksjoner om konfigurering av Stripe Connect-integrasjonen, vennligst <a href='https://github.com/openfoodfoundation/openfoodnetwork/wiki/Setting-up-Stripe-on-an-OFN-instance' target='_blank'> se denne veiledningen </a>.
+        status: Status
+        ok: Ok
+        instance_secret_key: Instans Secret Key
+        account_id: Konto-ID
+        business_name: Bedriftsnavn
+        charges_enabled: Avgifter Aktivert
+        charges_enabled_warning: "Advarsel: Avgifter er ikke aktivert for kontoen din"
+        auth_fail_error: API-nøkkelen du oppga er ugyldig
+        empty_api_key_error_html: Ingen Stripe API-nøkkel er gitt. For å angi din API-nøkkelen, følg <a href="https://github.com/openfoodfoundation/openfoodnetwork/wiki/Setting-up-Stripe-on-an-OFN-instance" target="_blank"> disse instruksjonene </a>
+    controllers:
+      enterprises:
+        stripe_connect_cancelled: "Tilkobling til Stripe har blitt avbrutt"
+        stripe_connect_success: "Stripe-konto tilkoblet vellykket"
+        stripe_connect_fail: Beklager, forbindelsen til Stripe-kontoen din mislyktes
+      stripe_connect_settings:
+        resource: Stripe Connect-konfigurasjon
   checkout:
     already_ordered:
       cart: "handlekurv"
       message_html: "Du har allerede en bestilling for denne bestillingsrunden. Sjekk %{cart}en for å se varene du bestilte før. Du kan også avbryte varer så lenge bestillingsrunden er åpen."
-  home:
+  shops:
     hubs:
       show_closed_shops: "Vis stengte butikker"
       hide_closed_shops: "Skjul stengte butikker"
@@ -536,6 +703,8 @@ nb:
       require_customer_login: "Denne butikken er kun for kunder."
       require_login_html: "Vennligst %{login} hvis du allerede har en konto. Hvis ikke, %{register} for å bli kunde."
       require_customer_html: "Vennligst %{contact} %{enterprise} for å bli kunde."
+  card_could_not_be_saved: kort kunne ikke lagres
+  spree_gateway_error_flash_for_checkout: "Det oppstod et problem med betalingsinformasjonen din: %{error}"
   invoice_billing_address: "Fakturaadresse:"
   invoice_column_tax: "MVA"
   invoice_column_price: "Pris"
@@ -546,14 +715,15 @@ nb:
   invoice_column_price_with_taxes: "Totalpris (Inkl. avgift)"
   invoice_column_price_without_taxes: "Totalpris (Eks. avgift)"
   invoice_column_tax_rate: "Avgiftsrate"
+  invoice_tax_total: "MVA Totalt:"
   tax_invoice: "AVGIFTSFAKTURA"
   tax_total: "Totalavgift (%{rate}):"
   total_excl_tax: "Sum (Eks. avgift):"
   total_incl_tax: "Sum (Inkl. avgift):"
-  abn: "ORG nr.:"
-  acn: "Org nr:"
+  abn: "Org. nr.:"
+  acn: "MVA nr:"
   invoice_issued_on: "Fakturadato:"
-  order_number: "Fakturanummer"
+  order_number: "Fakturanummer:"
   date_of_transaction: "Transaksjonsdato:"
   ticket_column_qty: "Antall"
   ticket_column_item: "Vare"
@@ -595,6 +765,10 @@ nb:
   on_demand: Ved forespørsel
   none: Ingen
   not_allowed: Ikke tillatt
+  no_shipping: ingen leveringsmetoder
+  no_payment: ingen betalingsmetoder
+  no_shipping_or_payment: ingen leveringsmetoder eller betalingsmetoder
+  unconfirmed: ubekreftet
   label_shops: "Butikker"
   label_map: "Kart"
   label_producers: "Produsenter"
@@ -612,7 +786,7 @@ nb:
   label_more: "Vis mer"
   label_less: "Vis mindre"
   label_notices: "Meldinger"
-  items: "varer"
+  cart_items: "Elementer"
   cart_headline: "Din handlekurv"
   total: "Sum"
   cart_updating: "Oppdaterer handlekurv..."
@@ -621,6 +795,18 @@ nb:
   card_number: Kortnummer
   card_securitycode: "Sikkerhetskode"
   card_expiry_date: Utløpsdato
+  card_masked_digit: "X"
+  card_expiry_abbreviation: "Exp"
+  new_credit_card: "Nytt kredittkort"
+  my_credit_cards: Mine kredittkort
+  add_new_credit_card: Legg til nytt kredittkort
+  saved_cards: Lagrede kort
+  add_a_card: Legg til et kort
+  add_card: Legg til kort
+  you_have_no_saved_cards: Du har ikke lagret noen kort enda
+  saving_credit_card: Lagrer kredittkort ...
+  card_has_been_removed: "Ditt kort er fjernet (nummer: %{number})"
+  card_could_not_be_removed: Beklager, kortet kunne ikke fjernes
   ie_warning_headline: "Din nettleser er for gammel :-("
   ie_warning_text: "For den beste opplevelsen med Open Food Network anbefaler vi på det sterkeste å oppgradere nettleseren din:"
   ie_warning_chrome: Last ned Chrome
@@ -698,6 +884,7 @@ nb:
   checkout_shipping_price: Levering
   checkout_total_price: Sum
   checkout_back_to_cart: "Tilbake til Handlekurv"
+  cost_currency: "Kostnadsvaluta"
   order_paid: BETALT
   order_not_paid: IKKE BETALT
   order_total: Sum bestilling
@@ -711,7 +898,7 @@ nb:
   order_pickup_instructions: Henteinstruksjoner
   order_produce: Varer
   order_total_price: Sum
-  order_includes_tax: (inkludert MVA)
+  order_includes_tax: (inkludert avgift)
   order_payment_paypal_successful: Din betaling via PayPal har blitt godkjent.
   order_hub_info: Hub info
   order_back_to_store: Tilbake til butikken
@@ -786,7 +973,7 @@ nb:
   shopping_contact_address: "Adresse"
   shopping_contact_web: "Kontakt"
   shopping_contact_social: "Følg"
-  shopping_groups_part_of: "er en del av:"
+  shopping_groups_part_of: "er del av:"
   shopping_producers_of_hub: "%{hub}s produsenter:"
   enterprises_next_closing: "Neste runde stenger"
   enterprises_ready_for: "Klar til"
@@ -919,7 +1106,7 @@ nb:
   sell_user_guide: "Finn ut mer i brukerhåndboken."
   sell_listing_price: "En profil på OFN er gratis. Les mer om hvor mye det koster å åpne en butikk på OFN eller å sette opp en gruppenettverk for organisasjonen din eller ditt regionale nettverk."
   sell_embed: "Vi kan også bygge inn en OFN butikk i din egen skreddersydde nettside eller bygge en tilpasset lokalmat nettverk nettside for din region."
-  sell_ask_services: "Spør oss om ØFN tjenester."
+  sell_ask_services: "Spør oss om OFN tjenester."
   shops_title: Butikker
   shops_headline: Handling på en ny måte.
   shops_text: Mat gror i syklus, bønder høster i syklus, og vi bestiller mat i syklus. Hvis du møter en stengt bestillingsrunde, sjekk igjen snart.
@@ -974,24 +1161,26 @@ nb:
   products_max_quantity: Max mengde
   products_distributor: Distributør
   products_distributor_info: Når du velger en distributør for din bestilling, vil deres adresse og hentetider vises her.
+  products_distribution_adjustment_label: "Produktfordeling etter %{distributor} for %{product}"
   shop_trial_expires_in: "Din prøveperiode på butikkfront går ut om "
   shop_trial_expired_notice: "Gode nyheter! Vi har bestemt å forlenge butikkprøveperioder inntil ytterligere beskjed."
   password: Passord
   remember_me: Husk meg
-  are_you_sure: "er du sikker?"
+  are_you_sure: "Er du sikker?"
   orders_open: Åpen for bestilling
   closing: "Stenger "
   going_back_to_home_page: "Tar deg tilbake til hjemmesiden"
   creating: Oppretter
-  updating: oppdatering
-  failed_to_create_enterprise: "Klarte ikke å opprette virksomheten."
-  failed_to_create_enterprise_unknown: "Klarte ikke å opprette virksomheten.\nKontroller at alle feltene er fylt ut."
-  failed_to_update_enterprise_unknown: "Klarte ikke å oppdatere virksomheten.\nKontroller at alle feltene er fylt ut."
+  updating: Oppdaterer
+  failed_to_create_enterprise: "Klarte ikke å opprette bedriften."
+  failed_to_create_enterprise_unknown: "Klarte ikke å opprette bedriften.\nKontroller at alle feltene er fylt ut."
+  failed_to_update_enterprise_unknown: "Klarte ikke å oppdatere bedriften.\nKontroller at alle feltene er fylt ut."
+  enterprise_confirm_delete_message: "Dette vil også slette %{product} som denne bedriften leverer. Er du sikker på at du vil fortsette?"
   order_not_saved_yet: "Bestillingen er ikke lagret ennå. Gi oss noen få sekunder for å fullføre!"
   filter_by: "Filtrer på"
   hide_filters: "Skjul filtre"
-  one_filter_applied: "1 filter påført"
-  x_filters_applied: "filter påført"
+  one_filter_applied: "1 filter i bruk"
+  x_filters_applied: "filter i bruk"
   submitting_order: "Bestilling sendes: vennligst vent"
   confirm_hub_change: "Er du sikker? Dette vil endre din valgte hub og fjerne eventuelle varer i handlekurven."
   confirm_oc_change: "Er du sikker? Dette vil endre din valgte bestilingsrunde og fjerne eventuelle varer i handlekurven."
@@ -999,6 +1188,8 @@ nb:
   error_required: "kan ikke være tomt"
   error_number: "må være tall"
   error_email: "må være epostadresse"
+  error_not_found_in_database: "%{name} ikke funnet i databasen"
+  error_no_permission_for_enterprise: "\"%{name}\": du har ikke rettigheter til å administrere produkter for denne bedriften"
   item_handling_fees: "Håndteringsavgifter for varen (inkludert i varens totaler)"
   january: "januar"
   february: "februar"
@@ -1027,10 +1218,64 @@ nb:
   password_reset_sent: "En epost med instruksjoner om å nullstille passordet har blitt sendt!"
   reset_password: "Tilbakestill passord"
   who_is_managing_enterprise: "Hvem er ansvarlig for å administrere %{enterprise}?"
+  enterprise:
+    registration:
+      modal:
+        steps:
+          details:
+            title: 'Detaljer'
+            headline: "La oss komme i gang"
+            enterprise: "Woot! Først må vi vite litt om bedriften din:"
+            producer: "Woot! Først må vi vite litt om gården din:"
+            enterprise_name_field: "Bedriftsnavn:"
+            producer_name_field: "Gårdsnavn:"
+            producer_name_field_placeholder: "f.eks Olas Fantastiske Gård"
+            producer_name_field_error: "Vennligst velg et unikt navn for bedriften din"
+            address1_field: "Adresselinje 1:"
+            address1_field_placeholder: "f.eks 123 Blåbærveien"
+            address1_field_error: "Vennligst skriv inn en adresse"
+            address2_field: "Adresselinje 2:"
+            suburb_field: "Forstad:"
+            suburb_field_placeholder: "f.eks Northcote"
+            suburb_field_error: "Vennligst skriv inn en forstad"
+            postcode_field: "Postnummer:"
+            postcode_field_placeholder: "f.eks 3070"
+            postcode_field_error: "Postnummer kreves"
+            state_field: "Fylke:"
+            state_field_error: "Fylke påkrevd"
+            country_field: "Land:"
+            country_field_error: "Vennligst velg et land"
+          contact:
+            title: 'Kontakt'
+            contact_field: 'Hovedkontakt'
+            contact_field_placeholder: 'Kontaktnavn'
+            contact_field_required: "Du må legge inn en hovedkontakt."
+            email_field: 'Epostadresse'
+            email_field_placeholder: 'f.eks. ola@gården.com'
+            phone_field: 'Telefonnummer'
+            phone_field_placeholder: 'f.eks. (03) 1234 5678'
+          type:
+            title: 'Type'
+            headline: "Siste skritt for å legge til %{enterprise}!"
+            question: "Er du en produsent?"
+            yes_producer: "Ja, jeg er produsent"
+            no_producer: "Nei, jeg er ikke produsent"
+            producer_field_error: "Vennligst velg en. Er du produsent?"
+            yes_producer_help: "Produsenter lager deilige ting å spise og/eller drikke. Du er en produsent hvis du vokser den, hever den, brygger den, baker den, gjærer den, melker den eller støper den."
+            no_producer_help: "Hvis du ikke er produsent, er du sannsynligvis noen som selger og distribuerer mat. Du kan være en hub, kooperativ, kjøpegruppe, forhandler, grossist eller annet."
+          about:
+            title: 'Om'
+          images:
+            title: 'Bilder'
+          social:
+            title: 'Sosial'
   enterprise_contact: "Primærkontakt"
+  enterprise_contact_placeholder: "Kontaktnavn"
   enterprise_contact_required: "Du må oppgi en primærkontakt."
   enterprise_email_address: "Epostadresse"
+  enterprise_email_placeholder: "f.eks. ola@gården.com"
   enterprise_phone: "Telefonnummer"
+  enterprise_phone_placeholder: "f.eks. (03) 1234 5678"
   back: "Tilbake"
   continue: "Fortsett"
   limit_reached_headline: "Å nei!"
@@ -1063,9 +1308,9 @@ nb:
   enterprise_long_desc_placeholder: "Dette er muligheten din til å fortelle historien om din virksomhet - hva gjør deg annerledes og flott? Vi vil foreslå å holde din beskrivelse til under 600 tegn eller 150 ord."
   enterprise_long_desc_length: "%{num} tegn / opptil 600 anbefales"
   enterprise_limit: Bedriftsgrense
-  enterprise_abn: "ORG#"
+  enterprise_abn: "Org. nr."
   enterprise_abn_placeholder: "f.eks. 999 000 123"
-  enterprise_acn: "MVA#"
+  enterprise_acn: "MVA nr."
   enterprise_acn_placeholder: "f.eks. 999 000 123"
   enterprise_tax_required: "Du må gjøre et valg."
   enterprise_final_step: "Siste steg!"
@@ -1100,6 +1345,7 @@ nb:
   registration_finished_activate: "Aktivere %{enterprise}."
   registration_finished_activate_instruction_html: "Vi har sendt en epostbekreftelse til <strong>%{email}</strong> hvis den ikke har blitt aktivert før.<br/> Følg instruksjonene der for å gjøre bedriften synlig på Open Food Network."
   registration_finished_action: "Open Food Network hjem"
+  registration_contact_name: 'Kontaktnavn'
   registration_type_headline: "Siste stegfor å legge til %{enterprise}!"
   registration_type_question: "Er du en produsent?"
   registration_type_producer: "Ja, jeg er en produsent"
@@ -1131,6 +1377,9 @@ nb:
   registration_detail_state_error: "Fylke kreves"
   registration_detail_country: "Land:"
   registration_detail_country_error: "Vennligst velg et land"
+  shipping_method_destroy_error: "Den fraktmetoden kan ikke slettes fordi den er referert til av en bestilling: %{number}."
+  accounts_and_billing_task_already_running_error: "En oppgave kjører allerede, vennligst vent til den er ferdig"
+  accounts_and_billing_start_task_notice: "Oppgave satt i kø"
   fees: "Gebyrer"
   item_cost: "Varepris"
   bulk: "Bulk"
@@ -1145,9 +1394,9 @@ nb:
   sales_fee: "Salgsgebyr"
   packing_fee: "Pakkegebyr"
   transport_fee: "Transportgebyr"
-  fundraising_fee: "innsamlingsaksjon"
+  fundraising_fee: "Innsamlingsgebyr"
   price_graph: "Prisgraf"
-  included_tax: "inkludert avgift"
+  included_tax: "Inkludert avgift"
   balance: "Balanse"
   transaction: "Transaksjon"
   transaction_date: "Dato"
@@ -1158,6 +1407,8 @@ nb:
   credit: "Kreditt"
   Paid: "Betalt"
   Ready: "Klar"
+  ok: OK
+  not_visible: ikke synlig
   you_have_no_orders_yet: "Du har ingen bestilinger enda"
   running_balance: "Løpende balanse"
   outstanding_balance: "Utestående balanse"
@@ -1189,20 +1440,31 @@ nb:
   admin_order_cycles: "Administrasjon Bestillingsrunder"
   open: "Åpne"
   close: "Steng"
+  create: "Opprett"
+  search: "Søk"
   supplier: "Leverandør"
+  product_name: "Produktnavn"
+  product_description: "Produktbeskrivelse"
+  units: "Enhetsstørrelse"
   coordinator: "Koordinator"
   distributor: "Distributør"
+  enterprise_fees: "Bedriftsavgifter"
+  process_my_order: "Behandle bestillingen min"
+  delivery_instructions: Leveringsinstruksjoner
+  delivery_method: Leveringsmetode
   fee_type: "Avfgiftstype"
   tax_category: "Avgiftskategori"
   calculator: "Kalkulator"
   calculator_values: "Kalkulatorverdier"
-  flat_percent_per_item: "Prosent (per stk)"
+  flat_percent_per_item: "Flat prosent (per stk)"
   new_order_cycles: "Nye Bestillingsrunder"
   new_order_cycle: "Ny bestillingsrunde"
-  select_a_coordinator_for_your_order_cycle: "Velg en koordinator for denne syklus"
+  select_a_coordinator_for_your_order_cycle: "Velg en koordinator for bestillingsrunde"
+  notify_producers: 'Meld produsenter'
   edit_order_cycle: "Endre Bestillingsrunde"
   roles: "Roller"
   update: "Oppdater"
+  delete: Slett
   add_producer_property: "Legg til produsentegenskap"
   in_progress: "Pågår"
   started_at: "Startet"
@@ -1220,6 +1482,7 @@ nb:
   on_hand: "På lager"
   save_changes: "Lagre Endringer"
   order_saved: "Bestilling lagret"
+  no_products: Ingen produkter
   spree_admin_overview_enterprises_header: "Mine Bedrifter"
   spree_admin_overview_enterprises_footer: "ADMINISTRER MINE BEDRIFTER"
   spree_admin_enterprises_hubs_name: "Navn"
@@ -1234,26 +1497,38 @@ nb:
   spree_admin_enterprises_producers_order_cycles: "Produkter i Bestillingsrunder"
   spree_admin_enterprises_tabs_hubs: "HUBS"
   spree_admin_enterprises_tabs_producers: "PRODUSENTER"
-  spree_admin_enterprises_producers_manage_order_cycles: "ADMINISTRER BESTILLINGSRUNDER"
   spree_admin_enterprises_producers_manage_products: "ADMINISTRER PRODUKTER"
-  spree_admin_enterprises_producers_orders_cycle_text: "Du har ingen aktive bestillingsrunder."
   spree_admin_enterprises_any_active_products_text: "Du har ingen aktive produkter."
   spree_admin_enterprises_create_new_product: "OPPRETT NYTT PRODUKT"
-  spree_admin_order_cycles: "Bestillingsrunder"
-  spree_admin_order_cycles_tip: "Bestillingsrunder bestemmer når og hvor dine produkter er tilgjengelig til kunder."
-  dashbord: "Dashboard"
   spree_admin_single_enterprise_alert_mail_confirmation: "Vennligst bekreft epostadressen for"
   spree_admin_single_enterprise_alert_mail_sent: "Vi har sendt epost til"
   spree_admin_overview_action_required: "Handling Nødvendig"
   spree_admin_overview_check_your_inbox: "Vennligst sjekk din innboks for nærmere instruksjoner. Takk!"
+  spree_admin_unit_value: Enhetsverdi
+  spree_admin_unit_description: Enhetsbeskrivelse
+  spree_admin_variant_unit: Variant enhet
+  spree_admin_variant_unit_scale: Variant enhetsskala
+  spree_admin_supplier: Leverandør
+  spree_admin_product_category: Produktkategori
+  spree_admin_variant_unit_name: Variant enhetsnavn
   change_package: "Endre Pakke"
   spree_admin_single_enterprise_hint: "Hint: For å hjelpe folk til å finne deg, skru på din synlighet under"
+  spree_admin_eg_pickup_from_school: "f.eks. 'Henting ved Sammfunnshuset'"
+  spree_admin_eg_collect_your_order: "f.eks. 'Vennligst hente din bestilling fra 123 Matveien, Nesodden, 3070'"
+  spree_classification_primary_taxon_error: "Gruppe %{taxon} er hovedgruppe til %{product} og kan ikke slettes"
+  spree_order_availability_error: "Distributør eller bestillingsrunde kan ikke levere produktene i handlekurven din"
+  spree_order_populator_error: "Den distributøren eller bestillingsrunden kan ikke levere alle produktene i handlekurven din. Vennligst velg en annen."
+  spree_order_populator_availability_error: "Det produktet er ikke tilgjengelig fra den valgte distributøren eller bestillingsrunden."
+  spree_distributors_error: "Minst en hub må velges"
+  spree_user_enterprise_limit_error: "^ %{email} kan ikke eie flere bedrifter (grense er %{enterprise_limit})."
+  spree_variant_product_error: må ha minst en variant
   your_profil_live: "Din profil live"
   on_ofn_map: "på Open Food Network kartet"
   see: "Se"
   live: "live"
   manage: "Administrer"
   resend: "Send på nytt"
+  trial: Prøve
   add_and_manage_products: "Legg til & administrer produkter"
   add_and_manage_order_cycles: "Legg til & administrer bestillingsrunder"
   manage_order_cycles: "Administrer bestillingsrunder"
@@ -1263,6 +1538,7 @@ nb:
   order_cycle: "Bestillingsrunde"
   order_cycles: "Bestillingsrunder"
   enterprises: "Bedrifter"
+  enterprise_relationships: "Bedriftsrelasjoner"
   remove_tax: "Fjern avgift"
   enterprise_terms_of_service: "Tjenestevilkår for Bedrifter"
   enterprises_require_tos: "Bedrifter må godta Tjenestevilkår"
@@ -1285,7 +1561,6 @@ nb:
   hub_sidebar_blue: "blå"
   hub_sidebar_red: "rød"
   shop_trial_in_progress: "Din prøveperiode på butikkfront går ut om %{days}."
-  shop_trial_expired: "Gode nyheter! Vi har bestemt å forlenge butikkprøveperioder inntil ytterligere beskjed (sannsynligvis rundt mars 2015)."
   report_customers_distributor: "Distributør"
   report_customers_supplier: "Leverandør"
   report_customers_cycle: "Bestillingsrunde"
@@ -1303,11 +1578,49 @@ nb:
   report_order_cycle: "Bestillingsrunde:"
   report_entreprises: "Bedrifter:"
   report_users: "Brukere:"
-  report_tax_rates: "Avgiftsrater"
-  report_tax_types: "Avgiftstyper"
-  report_header_order_number: "Bestillingsnummer"
-  report_header_date: "Dato"
-  report_header_items: "Varer"
+  report_tax_rates: Avgiftsrater
+  report_tax_types: Avgiftstyper
+  report_header_order_cycle: Bestillingsrunde
+  report_header_user: Bruker
+  report_header_email: Epost
+  report_header_status: Status
+  report_header_comments: Kommentarer
+  report_header_first_name: Fornavn
+  report_header_last_name: Etternavn
+  report_header_phone: Telefon
+  report_header_suburb: Område
+  report_header_address: Adresse
+  report_header_billing_address: Fakturaadresse
+  report_header_relationship: Forhold
+  report_header_hub: Hub
+  report_header_hub_address: Hubadresse
+  report_header_to_hub: Til Hub
+  report_header_hub_code: Hubkode
+  report_header_code: Kode
+  report_header_paid: Betalt?
+  report_header_delivery: Levert?
+  report_header_shipping: Levering
+  report_header_shipping_method: Leveringsmetod
+  report_header_shipping_instructions: Leveringsanvisninger
+  report_header_ship_street: Gatenavn Levering
+  report_header_ship_street_2: Gatenavn Levering 2
+  report_header_ship_city: By Levering
+  report_header_ship_postcode: Postnummer Levering
+  report_header_ship_state: Fylke Levering
+  report_header_billing_street: Gatenavn Fakturering
+  report_header_billing_street_2: Gatenavn Fakturering 2
+  report_header_billing_street_3: Gatenavn Fakturering 3
+  report_header_billing_street_4: Gatenavn Fakturering 4
+  report_header_billing_city: By Fakturering
+  report_header_billing_postcode: Postnummer Fakturering
+  report_header_billing_state: Fylke Fakturering
+  report_header_incoming_transport: Innkommende transport
+  report_header_special_instructions: Spesielle instruksjoner
+  report_header_order_number: Bestillingsnummer
+  report_header_date: Dato
+  report_header_confirmation_date: Bekreftelsesdato
+  report_header_tags: Merkelapper
+  report_header_items: Varer
   report_header_items_total: "Sum varer %{currency_symbol}"
   report_header_taxable_items_total: "Sum varer som krever avgift (%{currency_symbol})"
   report_header_sales_tax: "Salgsavgift (%{currency_symbol})"
@@ -1315,10 +1628,92 @@ nb:
   report_header_tax_on_delivery: "Leveringsavgift (%{currency_symbol})"
   report_header_tax_on_fees: "Avgiftsavgift (%{currency_symbol})"
   report_header_total_tax: "Sum avgifter (%{currency_symbol})"
-  report_header_customer: "Kunde"
-  report_header_distributor: "Distributør"
+  report_header_enterprise: Bedrift
+  report_header_customer: Kunde
+  report_header_customer_code: Kundekode
+  report_header_product: Produkt
+  report_header_product_properties: Produktegenskaper
+  report_header_quantity: Mengde
+  report_header_max_quantity: Maks antall
+  report_header_variant: Variant
+  report_header_variant_value: Variantverdi
+  report_header_variant_unit: Variant Enhet
+  report_header_total_available: Totalt tilgjengelig
+  report_header_unallocated: Uallokert
+  report_header_max_quantity_excess: Maks antall overskytende
+  report_header_taxons: Grupper
+  report_header_supplier: Leverandør
+  report_header_producer: Produsent
+  report_header_producer_suburb: Produsent Forstad
+  report_header_unit: Enhet
+  report_header_group_buy_unit_quantity: Gruppekjøp Enhet Antall
+  report_header_cost: Kostnad
+  report_header_shipping_cost: Fraktkostnad
+  report_header_curr_cost_per_unit: Nåværende Kostnad per Enhet
+  report_header_total_shipping_cost: Total fraktkostnad
+  report_header_payment_method: Betalingsmetode
+  report_header_sells: Selger
+  report_header_visible: Synlig
+  report_header_price: Pris
+  report_header_unit_size: Enhetsstørrelse
+  report_header_distributor: Distributør
+  report_header_distributor_address: Distributøradresse
+  report_header_distributor_city: By Distributør
+  report_header_distributor_postcode: Postnummer Distributør
+  report_header_delivery_address: Leveringsadresse
+  report_header_delivery_postcode: Postnummer Levering
+  report_header_bulk_unit_size: Bulk Enhetsstørrelse
+  report_header_weight: Vekt
+  report_header_sum_total: Totalsum
+  report_header_date_of_order: Bestillingsdato
+  report_header_amount_owing: Skyldig Beløp
+  report_header_amount_paid: Beløp Betalt
+  report_header_units_required: Enheter som kreves
+  report_header_remainder: Rest
+  report_header_order_date: Bestillingsdato
+  report_header_order_id: Bestillings Id
+  report_header_item_name: Varenavn
+  report_header_temp_controlled_items: Temperaturkontrollert varer?
+  report_header_customer_name: Kundenavn
+  report_header_customer_email: Kunde Epost
+  report_header_customer_phone: Kunde Telefon
+  report_header_customer_city: Kunde sted
+  report_header_payment_state: Betalingsstatus
+  report_header_payment_type: Betalingstype
+  report_header_item_price: "Vare (%{currency})"
+  report_header_item_fees_price: "Vare + Avgifter (%{currency})"
+  report_header_admin_handling_fees: "Admin & Håntering (%{currency})"
+  report_header_ship_price: "Levering (%{currency})"
+  report_header_pay_fee_price: "Betalingsavgift (%{currency})"
+  report_header_total_price: "Total (%{currency})"
+  report_header_product_total_price: "Vare Total (%{currency})"
+  report_header_shipping_total_price: "Frakt Total (%{currency})"
+  report_header_outstanding_balance_price: "Utestående saldo (%{currency})"
+  report_header_eft_price: "EFT (%{currency})"
+  report_header_paypal_price: "PayPal (%{currency})"
+  report_header_sku: SKU
+  report_header_amount: Beløp
+  report_header_balance: Balanse
+  report_header_total_cost: "Totalkostnad"
+  report_header_total_ordered: Total bestilt
+  report_header_total_max: Total Maks
+  report_header_total_units: Totalt antall enheter
+  report_header_sum_max_total: "Sum Maks. Total"
   report_header_total_excl_vat: "Sum eks. avgift (%{currency_symbol})"
   report_header_total_incl_vat: "Sum inkl. avgift (%{currency_symbol})"
+  report_header_temp_controlled: Temperaturkontrollert?
+  report_header_is_producer: Produsent?
+  report_header_not_confirmed: Ikke bekreftet
+  report_header_gst_on_income: MVA på Inntekter
+  report_header_gst_free_income: Momsfri inntekt
+  report_header_total_untaxable_produce: Sum ubeskattet produkt (ingen Moms)
+  report_header_total_taxable_produce: Sum Momspliktige produkter (inkludert Moms)
+  report_header_total_untaxable_fees: Samlede ikke skattepliktige avgifter (ingen skatt)
+  report_header_total_taxable_fees: Sum skattepliktig avgifter (inklusive skatt)
+  report_header_delivery_shipping_cost: Levering Fraktkostnad (inklusive skatt)
+  report_header_transaction_fee: Transaksjonsgebyr (ingen skatt)
+  report_header_total_untaxable_admin: Samlede avgiftsfrie administreringsjusteringer (ingen skatt)
+  report_header_total_taxable_admin: Sum skattepliktige adminintreringsjusteringer (inklusive skatt)
   initial_invoice_number: "Første fakturanummer:"
   invoice_date: "Fakturadato:"
   due_date: "Tidsfrist:"
@@ -1351,19 +1746,74 @@ nb:
   shipping_methods: "Leveringsmetoder"
   payment_methods: "Betalingsmetoder"
   payment_method_fee: "Transaksjongebyr"
-  enterprise_fees: "Bedriftsavgifter"
   inventory_settings: "Beholdningsinnstillinger"
   tag_rules: "Regler merkelapper"
   shop_preferences: "Butikkvalg"
+  enterprise_fee_whole_order: Hele bestillingen
+  enterprise_fee_by: "%{type} avgift ved %{role} %{enterprise_name}"
   validation_msg_relationship_already_established: "^Den relasjonen er allerede etablert."
   validation_msg_at_least_one_hub: "^Minst én hub må være valgt"
   validation_msg_product_category_cant_be_blank: "^Produktkategori kan ikke være blank"
   validation_msg_tax_category_cant_be_blank: "^Avgiftskategori kan ikke være blank"
   validation_msg_is_associated_with_an_exising_customer: "er assosiert med en eksisterende kunde"
+  content_configuration_pricing_table: "(TODO: Pristabell)"
+  content_configuration_case_studies: "(TODO: Casestudier)"
+  content_configuration_detail: "(TODO: Detalj)"
+  enterprise_name_error: "har allerede blitt tatt. Hvis dette er din bedrift og du ønsker å kreve eierskap, vennligst kontakt gjeldende leder av denne profilen på %{email}."
+  enterprise_owner_error: "^ %{email} kan ikke eie flere bedrifter (grense er %{enterprise_limit})."
+  enterprise_role_uniqueness_error: "^Den rollen finnes allerede."
+  inventory_item_visibility_error: må være true eller false
+  product_importer_file_error: "feil: ingen fil lastet opp"
+  product_importer_spreadsheet_error: "kunne ikke behandle filen: ugyldig filtype"
+  product_importer_products_save_error: kunne ikke lagre noen produkter
+  product_import_file_not_found_notice: 'Filen ble ikke funnet eller kunne ikke åpnes'
+  product_import_no_data_in_spreadsheet_notice: 'Ingen data funnet i regnearket'
+  order_choosing_hub_notice: Huben din er valgt.
+  order_cycle_selecting_notice: Din bestillingsrunde er valgt.
+  adjustments_tax_rate_error: "^Kontroller at skattesatsen for denne justeringen er riktig."
+  active_distributors_not_ready_for_checkout_message_singular: >-
+      Huben %{distributor_names} er oppført i en aktiv ordre, men har ikke gyldige
+      frakt- og betalingsmetoder. Inntil du setter disse opp, vil kundene ikke kunne
+      handle på denne huben.
+  active_distributors_not_ready_for_checkout_message_plural: >-
+      Hubene %{distributor_names} er oppført i en aktiv ordre, men har ikke gyldige
+      frakt- og betalingsmetoder. Inntil du setter disse opp, vil kundene ikke kunne
+      handle på disse hubene.
+  enterprise_fees_update_notice: Bedriftsavgiftene dine er oppdatert.
+  enterprise_fees_destroy_error: "Det bedriftsgebyret kan ikke slettes da det refereres av en produktdistribusjon: %{id} - %{name}."
+  enterprise_register_package_error: "Vennligst velg en pakke"
+  enterprise_register_error: "Kunne ikke fullføre registreringen for %{enterprise}"
+  enterprise_register_success_notice: "Gratulerer! Registrering for %{enterprise} er fullført!"
+  enterprise_bulk_update_success_notice: "Bedrifter oppdatert"
+  enterprise_bulk_update_error: 'Oppdatering mislyktes'
+  order_cycles_create_notice: 'Din bestillingsrunde er opprettet.'
+  order_cycles_update_notice: 'Din bestillingsrunde har blitt oppdatert.'
+  order_cycles_bulk_update_notice: 'Bestillingsrundene er oppdatert.'
+  order_cycles_clone_notice: "Din bestillingsrunde %{name} er blitt klonet."
+  order_cycles_email_to_producers_notice: 'E-poster som skal sendes til produsentene har blitt satt i kø for sending.'
+  order_cycles_no_permission_to_coordinate_error: "Ingen av bedriftene dine har tillatelse til å koordinere en bestillingsrunde"
+  order_cycles_no_permission_to_create_error: "Du har ikke rettigheter til å opprette en bestillingsrunde som er koordinert av den bedriften"
+  order_cycles_no_permission_to_delete_error: "Den bestillingsrunden er valgt av en kunde og kan ikke slettes. For å hindre at kundene får tilgang til den, vennligst lukk den i stedet."
   js:
+    saving: 'Lagrer...'
+    changes_saved: 'Endringene er lagret.'
+    save_changes_first: Lagre endringer først.
+    all_changes_saved: Alle endringer lagret
+    unsaved_changes: Du har ulagrede endringer
+    all_changes_saved_successfully: Alle endringer ble lagret
+    oh_no: "Å nei! Jeg kunne ikke lagre endringene dine."
+    unauthorized: "Du er uautorisert for å få tilgang til denne siden."
+    error: Feil
+    unavailable: Utilgjengelig
+    profile: Profil
+    hub: Hub
+    shop: Butikk
+    choose: Velge
+    resolve_errors: Vennligst løse følgende feil
+    more_items: "+ %{count} Flere"
     admin:
       modals:
-        got_it: Har det
+        got_it: Jeg forstår
         tag_rule_help:
           title: Regler for Merkelapper
           overview: Oversikt
@@ -1483,12 +1933,99 @@ nb:
           i din handlekurv gått ned. Her er hva som er endret.
       now_out_of_stock: er nå ikke på lager.
       only_n_remainging: "har nå kun %{num} igjen."
+    variant_overrides:
+      inventory_products: "Produkter i Varelager"
+      hidden_products: "Skjulte Produkter"
+      new_products: "Nye Produkter"
+      reset_stock_levels: Tilbakestill lagernivåer til standardinnstillinger
+      changes_to: Endringer til
+      one_override: En overstyring
+      overrides: overstyrer
+      remain_unsaved: forblir ulagret.
+      no_changes_to_save: Ingen endringer å lagre.'
+      no_authorisation: "Jeg kunne ikke få autorisasjon til å lagre endringene, så de forblir ulagrede."
+      some_trouble: "Jeg hadde noen problemer med å lagre: %{errors}"
+      changing_on_hand_stock: Endrer lagernivåer på lager...
+      stock_reset: Lager tilbakestilles til standardinnstillinger.
+    tag_rules:
+      show_hide_variants: 'Vis eller skjul varianter i min butikk'
+      show_hide_shipping: 'Vis eller skjul fraktmetoder ved kassen'
+      show_hide_payment: 'Vis eller skjul betalingsmetoder ved kassen'
+      show_hide_order_cycles: 'Vis eller skjul bestillingsrunder i min butikk'
+      visible: SYNLIG
+      not_visible: USYNLIG
+    services:
+      unsaved_changes_message: Ulagrede endringer eksisterer for øyeblikket, lagre nå eller ignorere?
+      save: LAGRE
+      ignore: OVERSE
+      add_to_order_cycle: "Legg til bestillingsrunden"
+      manage_products: "Administrer produkter"
+      edit_profile: "Endre Profil"
+      add_products_to_inventory: "Legg til produkter i varelager"
+    resources:
+      could_not_delete_customer: 'Kunne ikke slette kunde'
+    product_import:
+      confirmation: |
+        Dette vil sette varebeholdning til null på alle produkter for denne virksomheten som ikke er til stede i den nedlastede filen.
+    order_cycles:
+      update_success: 'Din bestillingsrunde har blitt oppdatert.'
+      no_distributors: Det er ingen distributører i denne bestillingsrunden. Denne bestillingsrunden vil ikke være synlig for kundene før du legger til en. Vil du fortsette å lagre denne bestillingsrunden? '
+    enterprises:
+      producer: "Produsent"
+      non_producer: "Ikke-Produsent"
+    customers:
+      select_shop: 'Vennligst velg en butikk først'
+      could_not_create: Beklager! Kunne ikke opprette
   producers:
     signup:
       start_free_profile: "Start med en gratis profil, og utvid når du er klar!"
   spree:
+    email: Epost
+    account_updated: "Konto oppdatert!"
     admin:
+      orders:
+        invoice:
+          issued_on: Utstedt på
+          tax_invoice: AVGIFTSFAKTURA
+          code: Kode
+          from: Fra
+          to: Til
+        form:
+          distribution_fields:
+            title: Distribusjon
+            distributor: "Distributør:"
+            order_cycle: "Bestillingsrunde:"
+      overview:
+        order_cycles:
+          order_cycles: "Bestillingsrunder"
+          order_cycles_tip: "Bestillingsrundene bestemmer når og hvor produktene dine er tilgjengelige for kundene."
+          you_have_active:
+            zero: "Du har ingen aktive bestillingsrunder"
+            one: "Du har en aktiv bestillingsrunde"
+            other: "Du har %{count} aktive bestillingssykluser."
+          manage_order_cycles: "BEHANDLE BESTILLINGSRUNDER"
+      payment_methods:
+        stripe_connect:
+          enterprise_select_placeholder: Velg...
+          loading_account_information_msg: Laster inn kontoinformasjon fra Stripe, vennligst vent ...
+          stripe_disabled_msg: Stripe-betalinger er deaktivert av systemadministratoren.
+          request_failed_msg: Beklager. Noe gikk galt da du forsøkte å bekrefte kontoinformasjon med Stripe...
+          account_missing_msg: Ingen Stripe-konto eksisterer for denne bedriften.
+          connect_one: Koble til en
+          access_revoked_msg: Tilgang til denne Stripe-kontoen er tilbakekalt, vennligst koble til din konto på nytt.
+          status: Status
+          connected: Tilkoblet
+          account_id: Konto-ID
+          business_name: Bedriftsnavn
+          charges_enabled: Avgifter Aktivert
+      payments:
+        source_forms:
+          stripe:
+            no_payment_via_admin_backend: Å skape Stripe-baserte betalinger fra admin-backend er ikke mulig for øyeblikket
       products:
+        new:
+          title: 'Nytt produkt'
+        unit_name_placeholder: 'f.eks. bunter'
         bulk_edit:
           header:
             title: Endre produkter i bulk
@@ -1496,13 +2033,41 @@ nb:
             title: LASTER PRODUKTER
             no_products: "Ingen produkter ennå. Ønsker du å legge til noen?"
             no_results: "Beklager, ingen resultater passer"
+          product_name: Produktnavn
+        primary_taxon_form:
+          product_category: Produktkategori
+        group_buy_form:
+          group_buy: "Gruppekjøp?"
+          bulk_unit_size: Bulk enhetsstørrelse
+        display_as:
+          display_as: Vis som
+      reports:
+        bulk_coop:
+          bulk_coop_supplier_report: 'Bulk Co-op - Totaler etter Leverandør'
+          bulk_coop_allocation: 'Bulk Co-op - Allokering'
+          bulk_coop_packing_sheets: 'Bulk Co-op - Pakkseddel'
+          bulk_coop_customer_payments: 'Bulk Co-op - Kunde Betalinger'
+      shared:
+        configuration_menu:
+          stripe_connect: Stripe Connect
       variants:
         autocomplete:
           producer_name: Produsent
+    checkout:
+      payment:
+        stripe:
+          choose_one: Velg en
+          enter_new_card: Skriv inn detaljer for et nytt kort
+          used_saved_card: "Bruk et lagret kort:"
+          or_enter_new_card: "Eller skriv inn detaljer for et nytt kort:"
+          remember_this_card: Husk dette kortet?
     date_picker:
       format: '%Y-%m-%d'
-      js_format: 'åå-mm-dd'
+      js_format: 'yy-mm-dd'
     inventory: Varelager
+    orders:
+      bought:
+        item: "Allerede bestilt i denne bestillingssyklusen"
     order_mailer:
       invoice_email:
         hi: "Hei %{name}"
@@ -1520,9 +2085,6 @@ nb:
       resumed: gjenopptatt
       returned: returnert
       skrill: skrill
-    orders:
-      invoice:
-        tax_invoice: "AVGIFTSFAKTURA:"
     payment_states:
       balance_due: balanse forfaller
       completed: fullført
@@ -1553,9 +2115,19 @@ nb:
     weight: Vekt (per kg)
     zipcode: Postnummer
     users:
+      form:
+        account_settings: Kontoinnstillinger
       show:
-        open_orders: Åpne bestillinger
-        transaction_history: Betalingshistorie
+        tabs:
+          orders: Bestillinger
+          cards: Kredittkort
+          transactions: Transaksjoner
+          settings: Kontoinnstillinger
+      orders:
+        open_orders: Åpne Bestillinger
+        past_orders: Tidligere Bestillinger
+      transactions:
+        transaction_history: Transaksjonshistorie
       open_orders:
         order: Bestilling
         shop: Butikk
@@ -1566,3 +2138,11 @@ nb:
         cancel: Avbryt
         closed: Stengt
         until: Inntil
+      past_orders:
+        order: Bestilling
+        shop: Butikk
+        completed_at: Fullført på
+        items: Elementer
+        total: Total
+        paid?: Betalt?
+        view: Vis
