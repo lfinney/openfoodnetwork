@@ -222,11 +222,15 @@ feature "As a consumer I want to check out my cart", js: true, retry: 3 do
         page.should_not have_content product.tax_category.name
       end
 
-      it "shows all shipping methods" do
+      it "shows all shipping methods in order by name" do
         toggle_shipping
-        page.should have_content "Frogs"
-        page.should have_content "Donkeys"
-        page.should have_content "Local"
+        within '#shipping' do
+          expect(page).to have_selector "label", count: 4 # Three shipping methods + instructions label
+          labels = page.all('label').map(&:text)
+          expect(labels[0]).to start_with("Donkeys") # sm2
+          expect(labels[1]).to start_with("Frogs") # sm1
+          expect(labels[2]).to start_with("Local") # sm3
+        end
       end
 
       context "when shipping method requires an address" do
