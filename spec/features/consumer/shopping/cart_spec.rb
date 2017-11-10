@@ -27,6 +27,14 @@ feature "full-page cart", js: true do
       Spree::Config.allow_backorders = allow_backorders
     end
 
+    describe "product description" do
+      it "does not link to the product page" do
+        add_product_to_cart order, product_fee, quantity: 2
+        visit spree.cart_path
+        expect(page).to_not have_selector '.item-thumb-image a'
+      end
+    end
+
     describe "fees" do
       let(:percentage_fee) { create(:enterprise_fee, calculator: Calculator::FlatPercentPerItem.new(preferred_flat_percent: 20)) }
 
@@ -66,6 +74,13 @@ feature "full-page cart", js: true do
         add_product_to_cart order, product_tax
       end
 
+      around do |example|
+        original = Spree::Config.allow_backorders
+        Spree::Config.allow_backorders = false
+        example.run
+        Spree::Config.allow_backorders = original
+      end
+
       it "prevents me from entering an invalid value" do
         # Given we have 2 on hand, and we've loaded the page after that fact
         variant.update_attributes! on_hand: 2
@@ -74,8 +89,7 @@ feature "full-page cart", js: true do
         accept_alert 'Insufficient stock available, only 2 remaining' do
           fill_in "order_line_items_attributes_0_quantity", with: '4'
         end
-
-        page.should have_field "order_line_items_attributes_0_quantity", with: '2'
+        expect(page).to have_field "order_line_items_attributes_0_quantity", with: '2'
       end
 
       it "shows the quantities saved, not those submitted" do
@@ -87,8 +101,8 @@ feature "full-page cart", js: true do
 
         click_button 'Update'
 
-        page.should have_field "order[line_items_attributes][0][quantity]", with: '1'
-        page.should have_content "Insufficient stock available, only 2 remaining"
+        expect(page).to have_content "Insufficient stock available, only 2 remaining"
+        expect(page).to have_field "order[line_items_attributes][0][quantity]", with: '1'
       end
     end
 

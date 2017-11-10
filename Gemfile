@@ -102,18 +102,18 @@ gem 'ofn-qz', github: 'openfoodfoundation/ofn-qz'
 group :test, :development do
   # Pretty printed test output
   gem 'turn', '~> 0.8.3', :require => false
-  gem 'fuubar'
-  gem 'rspec-rails'
+  gem 'fuubar', '~> 2.2.0'
+  gem 'rspec-rails', ">= 3.5.2"
   gem 'shoulda-matchers'
   gem 'factory_girl_rails', :require => false
-  gem 'capybara'
+  gem 'capybara', '>= 2.15.4'
   gem 'database_cleaner', '0.7.1', :require => false
   gem 'awesome_print'
   gem 'letter_opener'
   gem 'timecop'
-  gem 'poltergeist'
+  gem 'poltergeist', '>= 1.16.0'
   gem 'rspec-retry'
-  gem 'json_spec'
+  gem 'json_spec', '~> 1.1.4'
   gem 'unicorn-rails'
   gem 'atomic'
   gem 'knapsack'
@@ -130,10 +130,11 @@ group :development do
   gem 'pry-byebug', '>= 3.4.3'
   gem 'debugger-linecache'
   gem 'guard'
+  gem 'listen', '3.0.8' # 3.1.0 requires ruby 2.2
   gem 'guard-livereload'
   gem 'rack-livereload'
   gem 'guard-rails'
-  gem 'guard-rspec'
+  gem 'guard-rspec', '~> 4.7.3'
   gem 'parallel_tests'
   gem 'rubocop', '>= 0.49.1'
 

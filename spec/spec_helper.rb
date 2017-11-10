@@ -90,8 +90,16 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
+  def restart_phantomjs
+    Capybara.send('session_pool').values
+      .select { |s| s.driver.is_a?(Capybara::Poltergeist::Driver) }
+      .each { |s| s.driver.restart}
+  end
+
+  config.before(:all) { restart_phantomjs }
+
   # Geocoding
-  config.before(:each) { Spree::Address.any_instance.stub(:geocode).and_return([1,1]) }
+  config.before(:each) { allow_any_instance_of(Spree::Address).to receive(:geocode).and_return([1,1]) }
 
   # Ensure we start with consistent config settings
   config.before(:each) { Spree::Config.products_require_tax_category = false }
