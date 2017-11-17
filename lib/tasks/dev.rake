@@ -9,8 +9,6 @@ namespace :openfoodnetwork do
       require_relative '../../spec/support/spree/init'
       task_name = "openfoodnetwork:dev:load_sample_data"
 
-      # -- MailMethod
-      # TODO: Remove me when in Spree 2.0. See http://guides.spreecommerce.org/release_notes/spree_2_0_0.html#mailmethod-model-no-longer-exists
       Spree::MailMethod.create!(
         environment: Rails.env,
         preferred_mails_from: 'spree@example.com'
@@ -193,6 +191,8 @@ namespace :openfoodnetwork do
         .where('spree_products.supplier_id = ?', enterprise2.id)
 
       CreateOrderCycle.new(enterprise2, variants).call
+
+      EnterpriseRole.create!(user: Spree::User.first, enterprise: enterprise2)
     end
 
     # Creates an order cycle for the provided enterprise and selecting all the
